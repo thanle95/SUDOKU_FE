@@ -10,8 +10,6 @@ import { Action } from '../../Action';
 export const StatusSection = (props) => {
   return (
     <section className="status">
-      {/* <Difficulty onChange={props.onChange} />
-      <Timer /> */}
       <Numbers onClickNumber={(number) => props.onClickNumber(number)} />
       <div className="status__actions">
         <Action action='erase' onClickAction={props.onClickErase} />

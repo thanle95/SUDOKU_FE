@@ -26,16 +26,15 @@ export const Game = () => {
     setNumberSelected,
     gameArray,
     setGameArray,
-    setTimeGameStarted,
     cellSelected,
     setCellSelected,
     initArray,
     setInitArray,
     currentArray,
     setCurrentArray,
-    setWon,
   } = useSudokuContext();
   let [overlay, setOverlay] = useState(false);
+  const [timerString, setTimerString] = useState("")
 
   /**
    * Creates a new game and initializes the state variables.
@@ -49,9 +48,7 @@ export const Game = () => {
     setCurrentArray(new Array(9 * 9).fill("0"));
     setNumberSelected("0");
     //todo: start when "solve" button clicked
-    setTimeGameStarted(moment());
     setCellSelected(-1);
-    setWon(false);
   };
 
   /**
@@ -135,6 +132,7 @@ export const Game = () => {
 
   const onClickSolve = () => {
     //step 1: check if the given matrix is valid sudoku or not, from 1 to 9 and '0' (empty cell)
+    const timeGameStarted = moment();
     const error = checkError(currentArray);
     if (error.length) {
       console.log(error);
@@ -143,10 +141,18 @@ export const Game = () => {
 
     //step 2: use recursive function to solve the sudoku matrix
     if (solveSudoku(currentArray)) {
-      console.log("solve!!!")
+      console.log("solve!!!");
       setGameArray([...currentArray]);
-    }
 
+      let currentTime = moment();
+      const duration =  moment.duration(currentTime.diff(timeGameStarted));
+      const milliseconds = duration.milliseconds()
+      const seconds = duration.seconds()
+      const minutes = duration.minutes()
+      
+      setTimerString(`${minutes > 0 ? `${minutes.toString().padStart(2)} minutes and `: ''} ${seconds.toString().padStart(2)}.${milliseconds.toString().padStart(2)} seconds`)
+      setOverlay(true);
+    }
   };
   /**
    * Close the overlay on Click.
@@ -165,9 +171,8 @@ export const Game = () => {
   }, []);
 
   useEffect(() => {
-    console.log({gameArray})
-
-  }, [gameArray])
+    console.log({ gameArray });
+  }, [gameArray]);
   return (
     <>
       <div className={overlay ? "container blur" : "container"}>
@@ -186,8 +191,8 @@ export const Game = () => {
         onClick={onClickOverlay}
       >
         <h2 className="overlay__text">
-          You <span className="overlay__textspan1">solved</span>{" "}
-          <span className="overlay__textspan2">it!</span>
+          <span className="overlay__textspan1">Solved it</span>{" "}
+          <span className="overlay__textspan2">in {timerString}!</span> 
         </h2>
       </div>
     </>
