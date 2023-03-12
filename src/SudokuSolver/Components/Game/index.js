@@ -4,6 +4,7 @@ import { GameSection } from "../Layout/GameSection";
 import { useSudokuContext } from "../../Context/SudokuContext";
 import { StatusSection } from "../Layout/StatusSection";
 import { Header } from "../Layout/Header";
+import { checkError, solveSudoku } from "../../Solver/Sudoku";
 
 /**
  * Game is the main React component.
@@ -30,9 +31,10 @@ export const Game = () => {
     setCellSelected,
     initArray,
     setInitArray,
+    currentArray,
+    setCurrentArray,
     setWon,
   } = useSudokuContext();
-  let [history, setHistory] = useState([]); //[][]
   let [overlay, setOverlay] = useState(false);
 
   /**
@@ -42,13 +44,13 @@ export const Game = () => {
    * }
    */
   const _createNewGame = (e) => {
-    setInitArray(new Array(9*9).fill('0'));
-    setGameArray(new Array(9*9).fill('0'));
+    setInitArray(new Array(9 * 9).fill("0"));
+    setGameArray(new Array(9 * 9).fill("0"));
+    setCurrentArray(new Array(9 * 9).fill("0"));
     setNumberSelected("0");
     //todo: start when "solve" button clicked
     setTimeGameStarted(moment());
     setCellSelected(-1);
-    setHistory([]);
     setWon(false);
   };
 
@@ -64,17 +66,10 @@ export const Game = () => {
     if (initArray[index] === "0") {
       // Direct copy results in interesting set of problems, investigate more!
       let tempArray = gameArray.slice();
-      let tempHistory = history.slice();
-
-      // Can't use tempArray here, due to Side effect below!!
-      tempHistory.push(gameArray.slice());
-      setHistory(tempHistory);
 
       tempArray[index] = value;
       setGameArray(tempArray);
-
-      
-  
+      setCurrentArray(tempArray);
     }
   };
 
@@ -86,7 +81,7 @@ export const Game = () => {
    * }
    */
   const _userFillCell = (index, value) => {
-      _fillCell(index, value);
+    _fillCell(index, value);
   };
 
   /**
@@ -118,21 +113,8 @@ export const Game = () => {
    * }
    */
   const onClickNumber = (number) => {
-  if (cellSelected !== -1) {
+    if (cellSelected !== -1) {
       _userFillCell(cellSelected, number);
-    }
-  };
-
-  /**
-   * On Click Undo,
-   * try to Undo the latest change.
-   */
-  const onClickUndo = () => {
-    if (history.length) {
-      let tempHistory = history.slice();
-      let tempArray = tempHistory.pop();
-      setHistory(tempHistory);
-      if (tempArray !== undefined) setGameArray(tempArray);
     }
   };
 
@@ -147,19 +129,24 @@ export const Game = () => {
   };
 
   /**
-   * On Click Hint,
+   * On Click solve,
    * fill the selected cell if its empty or wrong number is filled.
    */
-  const onClickResolve = () => {
-    //use loop to fill cell with the correct number
-    // if (cellSelected !== -1) {
-    //   _fillCell(cellSelected, solvedArray[cellSelected]);
-    // }
 
-    // if (_isSolved(index, value)) {
-    //   setOverlay(true);
-    //   setWon(true);
-    // }
+  const onClickSolve = () => {
+    //step 1: check if the given matrix is valid sudoku or not, from 1 to 9 and '0' (empty cell)
+    const error = checkError(currentArray);
+    if (error.length) {
+      console.log(error);
+      return;
+    }
+
+    //step 2: use recursive function to solve the sudoku matrix
+    if (solveSudoku(currentArray)) {
+      console.log("solve!!!")
+      setGameArray([...currentArray]);
+    }
+
   };
   /**
    * Close the overlay on Click.
@@ -177,6 +164,10 @@ export const Game = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    console.log({gameArray})
+
+  }, [gameArray])
   return (
     <>
       <div className={overlay ? "container blur" : "container"}>
@@ -185,9 +176,8 @@ export const Game = () => {
           <GameSection onClick={(indexOfArray) => onClickCell(indexOfArray)} />
           <StatusSection
             onClickNumber={(number) => onClickNumber(number)}
-            onClickUndo={onClickUndo}
             onClickErase={onClickErase}
-            onClickResolve={onClickResolve}
+            onClickSolve={onClickSolve}
           />
         </div>
       </div>

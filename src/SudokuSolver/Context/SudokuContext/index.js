@@ -7,16 +7,14 @@ const SudokuContext = createContext({
   setNumberSelected: () => {},
   gameArray: [],
   setGameArray: () => {},
-  difficulty: "Easy",
-  setDifficulty: () => {},
   timeGameStarted: moment(),
   setTimeGameStarted: () => {},
-  fastMode: false,
-  setFastMode: () => {},
   cellSelected: -1,
   setCellSelected: () => {},
   initArray: [],
   setInitArray: () => {},
+  currentArray: [],
+  setCurrentArray: () => {},
   won: false,
   setWon: () => {},
 });
@@ -29,6 +27,7 @@ export const SudokuProvider = ({ children }) => {
   let [fastMode, setFastMode] = useState(false);
   let [cellSelected, setCellSelected] = useState(-1);
   let [initArray, setInitArray] = useState([]);
+  let [currentArray, setCurrentArray] = useState([]);
   let [won, setWon] = useState(false);
 
   return (
@@ -48,6 +47,8 @@ export const SudokuProvider = ({ children }) => {
         setCellSelected,
         initArray,
         setInitArray,
+        currentArray,
+        setCurrentArray,
         won,
         setWon,
       }}

@@ -245,7 +245,10 @@
  .status__number.status__number--selected {
    color: var(--color-blue);
  }
- 
+ .status__number:hover{
+  background-color: var(--color-grey-light);
+  color: #fff;
+ }
  .status__actions {
    position: relative;
    top: 100px;
@@ -256,7 +259,7 @@
  
  .status__action-undo,
  .status__action-erase,
- .status__action-hint,
+ .status__action-solve,
  .status__action-mistakes-mode,
  .status__action-fast-mode {
    text-align: center;
@@ -265,7 +268,7 @@
  
  .status__action-undo,
  .status__action-erase,
- .status__action-hint {
+ .status__action-solve {
    width: 33.33%;
    cursor: pointer;
  }
@@ -298,7 +301,7 @@
    height: 32%;
  }
  
- .status__action-hint .status__action-svg {
+ .status__action-solve .status__action-svg {
    top: 11px;
    width: 48%;
    height: 48%;
@@ -508,7 +511,7 @@
    }
    .status__action-undo,
    .status__action-erase,
-   .status__action-hint {
+   .status__action-solve {
      width: 16.66%;
    }
  
@@ -544,7 +547,7 @@
    }
    .status__action-undo,
    .status__action-erase,
-   .status__action-hint {
+   .status__action-solve {
      width: 33%;
    }
  
