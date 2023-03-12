@@ -1,7 +1,8 @@
 import "./App.css";
-import { Game } from "./Components/Game";
-import { SudokuProvider } from "./Context/SudokuContext";
-
+import { Game } from "./SudokuSolver/Components/Game";
+import { SudokuProvider } from "./SudokuSolver/Context/SudokuContext";
+// import { Game } from "./Sudoku/Components/Game";
+// import { SudokuProvider } from "./Sudoku/Context/SudokuContext";
 function App() {
   return (
     <SudokuProvider>
