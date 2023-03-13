@@ -54,7 +54,7 @@ export const Action = ({action, onClickAction}) => {
             : action === 'erase'
             ? 'Erase'
             : action === 'solve'
-            ? 'solve'
+            ? 'Solve'
             : ''
         }</p>
     </div>

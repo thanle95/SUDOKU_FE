@@ -99,6 +99,16 @@ export const Game = () => {
   };
 
   /**
+   *
+   * @param {Event} event
+   */
+  const onKeyDownCell = (event) => {
+    if (cellSelected !== -1) {
+      if (event.keyCode >= 49 && event.keyCode <= 57)
+        _userFillCell(cellSelected, event.key);
+    }
+  };
+  /**
    * On Click of Number in Status section,
    * either fill cell or set the number.
    * @param {
@@ -141,21 +151,32 @@ export const Game = () => {
 
       let timeGameSolved = moment();
       const duration = moment.duration(timeGameSolved.diff(timeGameStarted));
-      const milliseconds = duration.milliseconds(); 
+      const milliseconds = duration.milliseconds();
       const seconds = duration.seconds();
       const minutes = duration.minutes();
 
       setTimerString(
         `${
-          minutes > 0 ? `${minutes.toString().padStart(2)} minutes and ` : ""
-        } ${seconds.toString().padStart(2)}.${milliseconds
-          .toString()
-          .padStart(2)} seconds`
+          minutes > 0
+            ? `${minutes.toString().padStart(2, "0")} minutes and `
+            : ""
+        } ${
+          seconds > 0 ? `${seconds.toString().padStart(2, "0")}` : "0"
+        }.${milliseconds.toString().padStart(3, "0")} seconds`
       );
+      console.log(milliseconds);
       setOverlay(true);
       //
-
-      console.log(post('/api/Log', new Log(gameArray.join(""), currentArray.join(""), timeGameStarted.toDate(), timeGameSolved.toDate())));
+      const message = await post(
+        "/api/Log",
+        new Log(
+          gameArray.join(""),
+          currentArray.join(""),
+          timeGameStarted.toDate(),
+          timeGameSolved.toDate()
+        )
+      );
+      console.log(message);
 
       setGameArray([...currentArray]);
     }
@@ -180,7 +201,10 @@ export const Game = () => {
       <div className={overlay ? "container blur" : "container"}>
         <Header onClick={onClickNewGame} />
         <div className="innercontainer">
-          <GameSection onClick={(indexOfArray) => onClickCell(indexOfArray)} />
+          <GameSection
+            onClick={(indexOfArray) => onClickCell(indexOfArray)}
+            onKeyDown={onKeyDownCell}
+          />
           <StatusSection
             onClickNumber={(number) => onClickNumber(number)}
             onClickErase={onClickErase}

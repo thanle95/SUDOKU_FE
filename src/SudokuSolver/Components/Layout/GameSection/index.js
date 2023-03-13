@@ -5,10 +5,9 @@ import { useSudokuContext } from "../../../Context/SudokuContext";
 /**
  * React component for the Game Section
  */
-export const GameSection = ({ onClick }) => {
+export const GameSection = ({ onClick, onKeyDown }) => {
   const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-  let { gameArray, cellSelected } =
-    useSudokuContext();
+  let { gameArray, cellSelected } = useSudokuContext();
 
   /**
    * Cell Highlight Method 1: Highlight all cells
@@ -88,6 +87,8 @@ export const GameSection = ({ onClick }) => {
             className={`game__cell game__cell--userfilled game__cell--${highlight}selected`}
             key={indexOfArray}
             onClick={() => onClick(indexOfArray)}
+            onKeyDown={(event) => onKeyDown(event)}
+            tabIndex={-1}
           >
             {value}
           </td>
@@ -98,6 +99,8 @@ export const GameSection = ({ onClick }) => {
             className={`game__cell game__cell--filled game__cell--${highlight}selected`}
             key={indexOfArray}
             onClick={() => onClick(indexOfArray)}
+            onKeyDown={(event) => onKeyDown(event)}
+            tabIndex={-1}
           >
             {value}
           </td>
@@ -109,6 +112,8 @@ export const GameSection = ({ onClick }) => {
           className={`game__cell game__cell--${highlight}selected`}
           key={indexOfArray}
           onClick={() => onClick(indexOfArray)}
+          onKeyDown={(event) => onKeyDown(event)}
+          tabIndex={-1}
         >
           {value}
         </td>
@@ -130,6 +135,8 @@ export const GameSection = ({ onClick }) => {
             className="game__cell game__cell--userfilled"
             key={indexOfArray}
             onClick={() => onClick(indexOfArray)}
+            onKeyDown={(event) => onKeyDown(event)}
+            tabIndex={-1}
           >
             {value}
           </td>
@@ -140,6 +147,8 @@ export const GameSection = ({ onClick }) => {
             className="game__cell game__cell--filled"
             key={indexOfArray}
             onClick={() => onClick(indexOfArray)}
+            onKeyDown={(event) => onKeyDown(event)}
+            tabIndex={-1}
           >
             {value}
           </td>
@@ -151,6 +160,8 @@ export const GameSection = ({ onClick }) => {
           className="game__cell"
           key={indexOfArray}
           onClick={() => onClick(indexOfArray)}
+          onKeyDown={(event) => onKeyDown(event)}
+          tabIndex={-1}
         >
           {value}
         </td>
@@ -175,7 +186,8 @@ export const GameSection = ({ onClick }) => {
 
                   if (
                     cellSelected !== -1 &&
-                    _isCellSameAsSelectedCell(row, column)
+                    (_isCellSameAsSelectedCell(row, column) ||
+                      _isCellRelatedToSelectedCell(row, column))
                   ) {
                     return _selectedCell(indexOfArray, value, "");
                   } else {
@@ -192,5 +204,6 @@ export const GameSection = ({ onClick }) => {
 };
 
 GameSection.propTypes = {
-  onclick: PropTypes.func,
+  onClick: PropTypes.func,
+  onKeyDown: PropTypes.func,
 };
