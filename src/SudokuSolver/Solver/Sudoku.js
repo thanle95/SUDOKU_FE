@@ -12,7 +12,7 @@ export const checkError = (matrix) => {
     const array = getRow(matrix, row).filter((f) => f !== EMPTY);
     const set = new Set(array);
     if (array.length != 0 && array.length != set.size) {
-      return "Identical numbers in a row";
+      return "Identical numbers in a row!";
     }
   }
 
@@ -21,7 +21,7 @@ export const checkError = (matrix) => {
     const array = getColumn(matrix, col).filter((f) => f !== EMPTY);
     const set = new Set(array);
     if (array.length != 0 && array.length != set.size) {
-      return "Identical numbers in a column";
+      return "Identical numbers in a column!";
     }
   }
 
@@ -30,7 +30,7 @@ export const checkError = (matrix) => {
     const array = getSubMatrix(matrix, subMatrix).filter((f) => f !== EMPTY);
     const set = new Set(array);
     if (array.length != 0 && array.length != set.size) {
-      return "Identical numbers in a box";
+      return "Identical numbers in a box!";
     }
   }
   return "";

@@ -34,7 +34,7 @@ export const Game = () => {
   } = useSudokuContext();
   let [overlay, setOverlay] = useState(false);
   const [timerString, setTimerString] = useState("");
-
+  const [message, setMessage]  = useState("")
   /**
    * Creates a new game and initializes the state variables.
    * @param {
@@ -134,7 +134,7 @@ export const Game = () => {
 
   /**
    * On Click solve,
-   * fill the selected cell if its empty or wrong number is filled.
+   * automatically compute the missing numbers. If the Sudoku is not solvable, display an error message
    */
 
   const onClickSolve = async () => {
@@ -142,7 +142,7 @@ export const Game = () => {
     const timeGameStarted = moment();
     const error = checkError(currentArray);
     if (error.length) {
-      console.log(error);
+      setMessage(error)
       return;
     }
 
@@ -205,6 +205,7 @@ export const Game = () => {
           <GameSection
             onClick={(indexOfArray) => onClickCell(indexOfArray)}
             onKeyDown={onKeyDownCell}
+            message={message}
           />
           <StatusSection
             onClickNumber={(number) => onClickNumber(number)}

@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { useSudokuContext } from "../../../Context/SudokuContext";
+import { Message } from "../Message";
 
 /**
  * React component for the Game Section
  */
-export const GameSection = ({ onClick, onKeyDown }) => {
+export const GameSection = ({ onClick, onKeyDown, message }) => {
   const rows = [0, 1, 2, 3, 4, 5, 6, 7, 8];
   let { gameArray, cellSelected } = useSudokuContext();
 
@@ -199,6 +200,7 @@ export const GameSection = ({ onClick, onKeyDown }) => {
           })}
         </tbody>
       </table>
+      <Message message={message}/>
     </section>
   );
 };
@@ -206,4 +208,5 @@ export const GameSection = ({ onClick, onKeyDown }) => {
 GameSection.propTypes = {
   onClick: PropTypes.func,
   onKeyDown: PropTypes.func,
+  message: PropTypes.string
 };

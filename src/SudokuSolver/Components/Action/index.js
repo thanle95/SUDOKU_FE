@@ -38,9 +38,7 @@ const Svg = ({action}) => {
  */
 export const Action = ({action, onClickAction}) => {
   return (
-    <div className={  action === 'undo'
-                      ? "status__action-undo"
-                      : action === 'erase'
+    <div className={   action === 'erase'
                       ? "status__action-erase"
                       : action === 'solve'
                       ? "status__action-solve"
@@ -48,10 +46,7 @@ export const Action = ({action, onClickAction}) => {
                     } onClick={onClickAction} >
       <Svg action={action} />
       <p className="status__action-text">
-        {
-          action === 'undo'
-            ? 'Undo'
-            : action === 'erase'
+        { action === 'erase'
             ? 'Erase'
             : action === 'solve'
             ? 'Solve'
