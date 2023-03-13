@@ -193,6 +193,7 @@ export const Game = () => {
    */
   useEffect(() => {
     _createNewGame();
+    document.title = "Sudoku Solver!"
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
