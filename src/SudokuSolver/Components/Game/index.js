@@ -104,8 +104,9 @@ export const Game = () => {
    */
   const onKeyDownCell = (event) => {
     if (cellSelected !== -1) {
-      if (event.keyCode >= 49 && event.keyCode <= 57)
-        _userFillCell(cellSelected, event.key);
+      const key = Number(event.key)
+      if(!isNaN(key))
+        _userFillCell(cellSelected, key.toString());
     }
   };
   /**
