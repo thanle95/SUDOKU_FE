@@ -10,14 +10,17 @@ const SudokuContext = createContext({
   setCellSelected: () => {},
   currentArray: [],
   setCurrentArray: () => {},
+  showHistory: 0,
+  setShowHistory: () => {},
 });
 
 export const SudokuProvider = ({ children }) => {
-  let [numberSelected, setNumberSelected] = useState("0");
-  let [gameArray, setGameArray] = useState([]);
-  let [fastMode, setFastMode] = useState(false);
-  let [cellSelected, setCellSelected] = useState(-1);
-  let [currentArray, setCurrentArray] = useState([]);
+  const [numberSelected, setNumberSelected] = useState("0");
+  const [gameArray, setGameArray] = useState([]);
+  const [fastMode, setFastMode] = useState(false);
+  const [cellSelected, setCellSelected] = useState(-1);
+  const [currentArray, setCurrentArray] = useState([]);
+  const [showHistory, setShowHistory] = useState(0);
 
   return (
     <SudokuContext.Provider
@@ -32,6 +35,8 @@ export const SudokuProvider = ({ children }) => {
         setCellSelected,
         currentArray,
         setCurrentArray,
+        showHistory,
+        setShowHistory,
       }}
     >
       {children}

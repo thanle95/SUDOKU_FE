@@ -1,13 +1,16 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { post } from "../../APIs/service";
+import calDuration from "../../Commons/Duration";
 import { useSudokuContext } from "../../Context/SudokuContext";
 import { Log } from "../../Models/Log";
 import { checkError, solveSudoku } from "../../Solver/Sudoku";
 import { GameSection } from "../Layout/GameSection";
 import { Header } from "../Layout/Header";
+import { History } from "../Layout/History";
 import { StatusSection } from "../Layout/StatusSection";
 
+import './style.css'
 /**
  * Game is the main React component.
  */
@@ -31,10 +34,12 @@ export const Game = () => {
     setCellSelected,
     currentArray,
     setCurrentArray,
+    showHistory,
+    setShowHistory,
   } = useSudokuContext();
   let [overlay, setOverlay] = useState(false);
   const [timerString, setTimerString] = useState("");
-  const [message, setMessage]  = useState("")
+  const [message, setMessage] = useState("");
   /**
    * Creates a new game and initializes the state variables.
    * @param {
@@ -64,6 +69,7 @@ export const Game = () => {
     tempArray[index] = value;
     setGameArray(tempArray);
     setCurrentArray([...tempArray]);
+    setMessage("");
   };
 
   /**
@@ -104,9 +110,8 @@ export const Game = () => {
    */
   const onKeyDownCell = (event) => {
     if (cellSelected !== -1) {
-      const key = Number(event.key)
-      if(!isNaN(key))
-        _userFillCell(cellSelected, key.toString());
+      const key = Number(event.key);
+      if (!isNaN(key)) _userFillCell(cellSelected, key.toString());
     }
   };
   /**
@@ -142,30 +147,16 @@ export const Game = () => {
     const timeGameStarted = moment();
     const error = checkError(currentArray);
     if (error.length) {
-      setMessage(error)
+      setMessage(error);
       return;
     }
 
     //step 2: use recursive function to solve the sudoku matrix
     if (solveSudoku(currentArray)) {
       console.log("solve!!!");
+      const timeGameSolved = moment();
+      setTimerString(calDuration(timeGameStarted, timeGameSolved));
 
-      let timeGameSolved = moment();
-      const duration = moment.duration(timeGameSolved.diff(timeGameStarted));
-      const milliseconds = duration.milliseconds();
-      const seconds = duration.seconds();
-      const minutes = duration.minutes();
-
-      setTimerString(
-        `${
-          minutes > 0
-            ? `${minutes.toString().padStart(2, "0")} minutes and `
-            : ""
-        } ${
-          seconds > 0 ? `${seconds.toString().padStart(2, "0")}` : "0"
-        }.${milliseconds.toString().padStart(3, "0")} seconds`
-      );
-      console.log(milliseconds);
       setOverlay(true);
       //
       const message = await post(
@@ -191,6 +182,12 @@ export const Game = () => {
   };
 
   /**
+   * Show the history on Click
+   */
+  const onClickViewHistory = () => {
+    setShowHistory(showHistory + 1)
+  };
+  /**
    * On load, create a New Game.
    */
   useEffect(() => {
@@ -211,6 +208,7 @@ export const Game = () => {
             onClickNumber={(number) => onClickNumber(number)}
             onClickErase={onClickErase}
             onClickSolve={onClickSolve}
+            onClickViewHistory={onClickViewHistory}
           />
         </div>
       </div>
@@ -223,6 +221,7 @@ export const Game = () => {
           <span className="overlay__textspan2">in {timerString}!</span>
         </h2>
       </div>
+      <History />
     </>
   );
 };

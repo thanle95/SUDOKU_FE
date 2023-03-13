@@ -14,6 +14,7 @@ export const StatusSection = (props) => {
       <div className="status__actions">
         <Action action='erase' onClickAction={props.onClickErase} />
         <Action action='solve' onClickAction={props.onClickSolve} />
+        <Action action='history' onClickAction={props.onClickViewHistory} />
       </div>
     </section>
   )
@@ -23,4 +24,5 @@ StatusSection.propTypes = {
     onClickNumber: PropTypes.func,
     onClickErase: PropTypes.func,
     onClickSolve: PropTypes.func,
+    onClickViewHistory: PropTypes.func,
 }
