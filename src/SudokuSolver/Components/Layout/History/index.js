@@ -20,10 +20,8 @@ export const History = ({}) => {
         initMatrix: m.initMatrix,
         solvedMatrix: m.solvedMatrix,
         startDate: moment(m.startDate)
-          .utc(false)
           .format("YYYY-MM-DD, h:mm:ss.SSS a"),
         solvedDate: moment(m.solvedDate)
-          .utc(false)
           .format("YYYY-MM-DD, h:mm:ss.SSS a"),
         duration: calDuration(moment(m.startDate), moment(m.solvedDate)),
       }))

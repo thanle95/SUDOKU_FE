@@ -144,7 +144,7 @@ export const Game = () => {
 
   const onClickSolve = async () => {
     //step 1: check if the given matrix is valid sudoku or not, from 1 to 9 and '0' (empty cell)
-    const timeGameStarted = moment();
+    const timeGameStarted = moment().utc(true);
     const error = checkError(currentArray);
     if (error.length) {
       setMessage(error);
@@ -154,7 +154,8 @@ export const Game = () => {
     //step 2: use recursive function to solve the sudoku matrix
     if (solveSudoku(currentArray)) {
       console.log("solve!!!");
-      const timeGameSolved = moment();
+      const timeGameSolved = moment().utc(true);
+      console.log(timeGameSolved)
       setTimerString(calDuration(timeGameStarted, timeGameSolved));
 
       setOverlay(true);
