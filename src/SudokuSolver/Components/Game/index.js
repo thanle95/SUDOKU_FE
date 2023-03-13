@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { GameSection } from "../Layout/GameSection";
+import React, { useEffect, useState } from "react";
+import { post } from "../../APIs/service";
 import { useSudokuContext } from "../../Context/SudokuContext";
-import { StatusSection } from "../Layout/StatusSection";
-import { Header } from "../Layout/Header";
+import { Log } from "../../Models/Log";
 import { checkError, solveSudoku } from "../../Solver/Sudoku";
+import { GameSection } from "../Layout/GameSection";
+import { Header } from "../Layout/Header";
+import { StatusSection } from "../Layout/StatusSection";
 
 /**
  * Game is the main React component.
@@ -13,7 +15,6 @@ export const Game = () => {
   /**
    * All the variables for holding state:
    * gameArray: Holds the current state of the game.
-   * initArray: Holds the initial state of the game.
    * numberSelected: The Number selected in the Status section.
    * timeGameStarted: Time the current game was started.
    * cellSelected: If a game cell is selected by the user, holds the index.
@@ -28,13 +29,11 @@ export const Game = () => {
     setGameArray,
     cellSelected,
     setCellSelected,
-    initArray,
-    setInitArray,
     currentArray,
     setCurrentArray,
   } = useSudokuContext();
   let [overlay, setOverlay] = useState(false);
-  const [timerString, setTimerString] = useState("")
+  const [timerString, setTimerString] = useState("");
 
   /**
    * Creates a new game and initializes the state variables.
@@ -43,7 +42,6 @@ export const Game = () => {
    * }
    */
   const _createNewGame = (e) => {
-    setInitArray(new Array(9 * 9).fill("0"));
     setGameArray(new Array(9 * 9).fill("0"));
     setCurrentArray(new Array(9 * 9).fill("0"));
     setNumberSelected("0");
@@ -60,14 +58,12 @@ export const Game = () => {
    * }
    */
   const _fillCell = (index, value) => {
-    if (initArray[index] === "0") {
-      // Direct copy results in interesting set of problems, investigate more!
-      let tempArray = gameArray.slice();
+    // Direct copy results in interesting set of problems, investigate more!
+    let tempArray = [...gameArray];
 
-      tempArray[index] = value;
-      setGameArray(tempArray);
-      setCurrentArray(tempArray);
-    }
+    tempArray[index] = value;
+    setGameArray(tempArray);
+    setCurrentArray([...tempArray]);
   };
 
   /**
@@ -130,7 +126,7 @@ export const Game = () => {
    * fill the selected cell if its empty or wrong number is filled.
    */
 
-  const onClickSolve = () => {
+  const onClickSolve = async () => {
     //step 1: check if the given matrix is valid sudoku or not, from 1 to 9 and '0' (empty cell)
     const timeGameStarted = moment();
     const error = checkError(currentArray);
@@ -142,16 +138,26 @@ export const Game = () => {
     //step 2: use recursive function to solve the sudoku matrix
     if (solveSudoku(currentArray)) {
       console.log("solve!!!");
-      setGameArray([...currentArray]);
 
-      let currentTime = moment();
-      const duration =  moment.duration(currentTime.diff(timeGameStarted));
-      const milliseconds = duration.milliseconds()
-      const seconds = duration.seconds()
-      const minutes = duration.minutes()
-      
-      setTimerString(`${minutes > 0 ? `${minutes.toString().padStart(2)} minutes and `: ''} ${seconds.toString().padStart(2)}.${milliseconds.toString().padStart(2)} seconds`)
+      let timeGameSolved = moment();
+      const duration = moment.duration(timeGameSolved.diff(timeGameStarted));
+      const milliseconds = duration.milliseconds(); 
+      const seconds = duration.seconds();
+      const minutes = duration.minutes();
+
+      setTimerString(
+        `${
+          minutes > 0 ? `${minutes.toString().padStart(2)} minutes and ` : ""
+        } ${seconds.toString().padStart(2)}.${milliseconds
+          .toString()
+          .padStart(2)} seconds`
+      );
       setOverlay(true);
+      //
+
+      console.log(post('/api/Log', new Log(gameArray.join(""), currentArray.join(""), timeGameStarted.toDate(), timeGameSolved.toDate())));
+
+      setGameArray([...currentArray]);
     }
   };
   /**
@@ -169,10 +175,6 @@ export const Game = () => {
     _createNewGame();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.log({ gameArray });
-  }, [gameArray]);
   return (
     <>
       <div className={overlay ? "container blur" : "container"}>
@@ -192,7 +194,7 @@ export const Game = () => {
       >
         <h2 className="overlay__text">
           <span className="overlay__textspan1">Solved it</span>{" "}
-          <span className="overlay__textspan2">in {timerString}!</span> 
+          <span className="overlay__textspan2">in {timerString}!</span>
         </h2>
       </div>
     </>
