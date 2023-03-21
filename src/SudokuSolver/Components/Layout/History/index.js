@@ -7,7 +7,7 @@ import { SERVER } from "../../../APIs/service";
 import calDuration from "../../../Commons/Duration";
 import { useSudokuContext } from "../../../Context/SudokuContext";
 
-const pageSizes = [10, 25, 50, 100];
+const pageSizes = [5, 10, 25, 50, 100];
 
 export const History = ({}) => {
   const {showHistory} = useSudokuContext()
@@ -43,14 +43,16 @@ export const History = ({}) => {
           showBorders={true}
         >
           {/* <Column dataField="id" dataType="" /> */}
+          <Paging defaultPageSize={5} />
+          <Pager allowedPageSizes={pageSizes} showPageSizeSelector showNavigationButtons/>
           <Column dataField="initMatrix" dataType="string" />
           <Column dataField="solvedMatrix" dataType="string" />
           <Column dataField="startDate" dataType="string" width={250} />
           <Column dataField="solvedDate" dataType="string" width={250} />
           <Column dataField="duration" dataType="string" width={150} />
 
-          <Pager allowedPageSizes={pageSizes} showPageSizeSelector={true} />
-          <Paging defaultPageSize={10} />
+
+       
         </DataGrid>
       )}
     </div>
